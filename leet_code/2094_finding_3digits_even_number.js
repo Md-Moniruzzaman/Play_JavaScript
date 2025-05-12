@@ -4,31 +4,47 @@
  */
 var findEvenNumbers = function(digits) {
     digits.sort((a, b) => a - b);
-    const result = [];
+    let result = new Set();
     const n = digits.length;
-    const used = new Array(n).fill(false);
-    const backtrack = (current, start) => {
-        if (current.length === 3) {
-            const num = parseInt(current.join(''), 10);
-            if (num % 2 === 0 && num >= 100) {
-                result.push(num);
+    for (let i = 0; i < n; i++) {
+        if (digits[i] === 0) continue; // Skip leading zero
+        for (let j = 0; j < n; j++) {
+            if (i === j) continue;
+            for (let k = 0; k < n; k++) {
+                if (i === k || j === k) continue;
+                if (digits[k] % 2 === 0) { // Check if the last digit is even
+                    result.add(digits[i] * 100 + digits[j] * 10 + digits[k]);
+                }
             }
-            return;
-        }
-        for (let i = start; i < n; i++) {
-            if (used[i] || (i > start && digits[i] === digits[i - 1])) continue;
-            used[i] = true;
-            current.push(digits[i]);
-            backtrack(current, i + 1);
-            current.pop();
-            used[i] = false;
         }
     }
-    backtrack(digits, 0);
-    return result;
+    // result = [...new Set(result)]; // Remove duplicates
+    // result.sort((a, b) => a - b); // Sort the result
+
+   
+    // let bucket = new Array(10).fill(0);
+    // let res = [];
+    // for (let i=0; i<digits.length; i++) {
+    //     bucket[digits[i]]++;
+    // }
+
+    // for (let i=100; i<=999; i+=2) {
+    //     const hundred = Math.floor(i / 100);
+    //     const tens = Math.floor((i % 100) / 10);
+    //     const ones = i % 10;
+    //     let include = true;
+    //     if (--bucket[hundred] < 0) include = false;
+    //     if (--bucket[tens] < 0) include = false;
+    //     if (--bucket[ones] < 0) include = false;
+    //     if (include) res.push(i);
+    //     bucket[hundred]++; bucket[tens]++; bucket[ones]++;
+    // }
+       
+
+    return [...result];
 };
 
 // Example usage:
-const digits = [2, 1, 3, 0];
+const digits = [2,2,8,8,2];
 const result = findEvenNumbers(digits);
 console.log(result); // Output: [102, 120, 130, 210, 230]
